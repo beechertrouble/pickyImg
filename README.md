@@ -5,7 +5,7 @@ loading different versions of images based on venue, lazy load and all that.
 
 setup :
 -----------
-- requires: jQuery, [link](https://github.com/beechertrouble/UAjammer)UAjammer*, jQuery.inView**
+- requires: jQuery, [UAjammer](https://github.com/beechertrouble/UAjammer)*, [jQuery.inView](https://github.com/beechertrouble/inView)**
 	- *unless you pass your own logic for venue -> data-src mapping or pass <code>whichSrc</code> as an arg.
 	- **
 
