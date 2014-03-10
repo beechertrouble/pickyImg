@@ -1,58 +1,25 @@
 /** 
-* v1.00
-* progressive img loader ...
-* needs UAjammer to work ...
+* pickyImg (https://github.com/beechertrouble/pickyImg) 
+* a venue-based img loader ...
+* by beechertrouble (http://beechbot.com)
+* v0.0.1
+* needs jQuery, and maybe UAjammer to work ...
 */
-var _pickyImg = function _pickyImg(args) {
+var _pickyImg = (function _pickyImg(W, $) {
 	
 	var ME = this,
-		args = args || {},
-		W = window,
-		pad = args.pad || $(W).height(),
+		UA = W._UAjammer !== undefined ? W._UAjammer : undefined,
+		args,
+		pad,
 		wChangeTimer,
 		wIsStopped = true,
 		whichSrc,
+		srcMap,
 		origin = {},
-		callbacks = {
-			init : args.init || null,
-			picking : args.picking || null,
-			finished : args.finished || null
-		},
+		callbacks = {},
 		// methods
-		init, binder, wStopped, pickMe, isFinished
+		binder, wStopped, pickMe, isFinished, defMap
 		;
-			
-	init = function() {
-		
-		// defaults ...
-		switch(true) {
-			
-			case(_UAjammer.Venue == 'phone'):
-				whichSrc = _UAjammer.Pixels >= 2 ? 'data-680' : 'data-340';
-				break;
-			
-			// @todo : revisit who gets retina ? ... 
-			case((_UAjammer.Venue == 'tablet' || _UAjammer.Venue == 'desktop') && _UAjammer.Pixels >= 2):
-				whichSrc = 'data-1880';
-				break;
-				
-			case(_UAjammer.Venue == 'desktop'):
-			case(_UAjammer.Venue == 'tablet'):
-			default:
-				whichSrc = 'data-960';
-				break;
-								
-		}
-		
-		$(document).ready(function() {
-			
-			binder();
-			
-		});	
-		
-		ME.doCallback('init');
-		
-	};
 	
 	ME.doCallback = function(event) {
 				
@@ -60,6 +27,55 @@ var _pickyImg = function _pickyImg(args) {
 			
 		if(func !== undefined && typeof callbacks[event] == 'function')
 			func();
+			
+	};
+	
+	// ....
+			
+	ME.init = function(initArgs) {
+		
+		args = initArgs !== undefined ? initArgs : {};
+		pad = args.pad || $(W).height();
+		whichSrc = args.whichSrc || 'data-src-default';
+		srcMap = args.srcMap || undefined;
+		callbacks = {
+			init : args.init || null,
+			picking : args.picking || null,
+			finished : args.finished || null
+		};
+		
+		whichSrc = typeof srcMap == 'function' ? srcMap() : defMap();		
+		
+		binder();
+		
+		ME.doCallback('init');
+		
+	};
+	
+	defMap = function() {
+		
+		if(UA === undefined || args.whichSrc !== undefined)
+			return whichSrc;
+			
+		var chosenSrc = whichSrc;
+		
+		switch(true) {
+			
+			case(UA.Venue == 'phone'):
+				chosenSrc = UA.Pixels >= 2 ? 'data-src-phonex2' : 'data-src-phone';
+				break;
+			
+			case(UA.Venue == 'tablet'):
+				chosenSrc = UA.Pixels >= 2 ? 'data-src-tabletx2' : 'data-src-tablet';
+				break;
+				
+			case(UA.Venue == 'desktop'):
+				chosenSrc = UA.Pixels >= 2 ? 'data-src-desktopx2' : 'data-desktop';
+				break;
+								
+		}
+		
+		return chosenSrc;
 			
 	};
 	
@@ -170,10 +186,8 @@ var _pickyImg = function _pickyImg(args) {
 			ME.doCallback('finished');
 		}
 		
-	};
+	};	
 	
-	// jam it ...
-	if(args.immediately === undefined || args.immediately)
-		init();	
+	return this;
 		
-};
+}(window, jQuery));
