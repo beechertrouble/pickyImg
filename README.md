@@ -31,7 +31,7 @@ usage :
 customization :
 -----------
  - optional args for `init()` :
- ``` javascript
+ ```
  var args = { // all of these are optional...
  		selector : '._picky', // selector(s) to use for bindings, defaults to '._picky'
  		pad : 0, // defaults to window height
