@@ -15,6 +15,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 		wIsStopped = true,
 		whichSrc,
 		srcMap,
+		selector,
 		origin = {},
 		callbacks = {},
 		// methods
@@ -41,6 +42,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 		pad = args.pad || $(W).height();
 		whichSrc = args.whichSrc || 'data-src-default';
 		srcMap = args.srcMap || undefined;
+		selector = args.selector || '._picky';
 		callbacks = {
 			init : args.init || null,
 			picking : args.picking || null,
