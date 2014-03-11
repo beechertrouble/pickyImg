@@ -1,6 +1,6 @@
 pickyImg
 ========
-For loading different versions of images based on venue, lazy loading and all that. By default, it uses UAjammer's venue attribute to decide which src to load - not window width. BUT you can override that and pride your own logic if you like.
+For loading different versions of images based on venue, lazy loading and all that. By default, it uses UAjammer's venue attribute to decide which src to load - not window width. BUT you can override that and roll your own logic if you like.
 
 
 setup :
