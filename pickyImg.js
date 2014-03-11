@@ -40,15 +40,15 @@ var _pickyImg = (function _pickyImg(W, $) {
 		if(!$().inView){$.fn.inView=function(j){var h=false,g=$(window);if(this.length>0){var i=this.offset()===null?0:this.offset().top,f=i+this.height();j=j===undefined?g.height():j;h=((g.scrollTop()+g.height())+j)>=i&&(g.scrollTop()-j)<=f?true:false}return h}};
 		
 		args = initArgs !== undefined ? initArgs : {};
-		pad = args.pad || $(W).height();
-		whichSrc = args.whichSrc || 'data-src-default';
-		srcMap = args.srcMap || undefined;
-		selector = args.selector || '._picky';
+		pad = args.pad !== undefined ? args.pad : $(W).height();
+		whichSrc = args.whichSrc !== undefined ? args.whichSrc : 'data-src-default';
+		srcMap = args.srcMap !== undefined ? args.srcMap : undefined;
+		selector = args.selector !== undefined ? args.selector : '._picky';
 		bindMe = args.bindMe !== undefined ? args.bindMe : true;
 		callbacks = {
-			init : args.init || null,
-			picking : args.picking || null,
-			finished : args.finished || null
+			init : args.init !== undefined ? args.init : null,
+			picking : args.picking !== undefined ? args.picking : null,
+			finished : args.finished !== undefined ? args.finished : null
 		};
 				
 		whichSrc = typeof srcMap == 'function' ? srcMap() : defMap();		
@@ -62,7 +62,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 	
 	defMap = function() {
 		
-		if(UA === undefined || args.whichSrc !== undefined)
+		if(UA === undefined || srcMap === undefined)
 			return whichSrc;
 			
 		var chosenSrc = whichSrc;
@@ -78,7 +78,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 				break;
 				
 			case(UA.Venue == 'desktop'):
-				chosenSrc = UA.Pixels >= 2 ? 'data-src-desktopx2' : 'data-desktop';
+				chosenSrc = UA.Pixels >= 2 ? 'data-src-desktopx2' : 'data-src-desktop';
 				break;
 								
 		}
@@ -111,19 +111,21 @@ var _pickyImg = (function _pickyImg(W, $) {
 		// trigger first run ...
 		wStopped();
 		
+		console.log('bound');
+		
 	};
 	
 	wStopped = function() {
 		
 		wIsStopped = true;
 		$(W).trigger('wStopped');
-		// $('body *').trigger('wStopped');
+		$('body ' + selector).trigger('wStopped');
 		
 	};
 	
 	pickMe = function(dummy) {
-				
-		if(dummy.inView(pad) && !dummy.hasClass('._picky_picking')) {
+		console.log(dummy.inView(pad) && !dummy.hasClass('_picky_picking'));		
+		if(dummy.inView(pad) && !dummy.hasClass('_picky_picking')) {
 						
 			dummy.addClass("_picky_picking");
 							
@@ -136,7 +138,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 
 			imgLoad_handler = function() {
 				
-				if(dummy.is('._picky_bg')) {
+				if(dummy.hasClass('_picky_bg')) {
 					dummy.css({'background-image' : 'url(' + src + ')'});
 				} else {
 					dummy.prepend($(this));
