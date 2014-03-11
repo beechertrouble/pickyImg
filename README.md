@@ -6,7 +6,7 @@ loading different versions of images based on venue, lazy load and all that.
 setup :
 -----------
 - requires: jQuery, [UAjammer](https://github.com/beechertrouble/UAjammer)
-	- * UAjammer necessary to determine veniew - unless you pass your own logic for venue -> data-src mapping or pass <code>whichSrc</code> as an arg.
+	- * UAjammer necessary to determine venue - unless you pass your own logic for venue -> data-src mapping -OR- pass <code>whichSrc</code> as an arg.
 	- see 'SRC Logic' below for more details.
 
 
@@ -35,9 +35,10 @@ customization :
  var args = { // all of these are optional...
  		selector : '._picky', // selector to use for bindings, defaults to '._picky' ...
  		pad : 0, // defaults to window height...
- 		whichSrc : 'data-src-to-use', // defaults to choosing based on UAjammer venue ** OR 'data-src-default' when no UAjammer is present...
+ 		whichSrc : 'data-src-to-use', // defaults to choosing based on UAjammer venue ** -OR- 'data-src-default' when no UAjammer is present...
  		srcMap : function(){...}, // defaults to using UAjammer and default logic ** ...
- 		callbacks : {...} // you can pass funtions for certain callbacks *** ...
+ 		bindMe : true, // use defualt binding, defaults to true *** ...
+ 		callbacks : {...} // you can pass funtions for certain callbacks **** ...
  	};
  _pickyImg.init(args);
 ```
@@ -64,8 +65,15 @@ switch(true) {
 }
 ```
 
+*** default binding :
+-----------
+- creates a more efficient event (wStopped) to detect window scroll and resize (both of which fire more then we need).
+- the wStopped event is triggered 150ms after a user has stopped scrolling/resizing the window.
 
-*** Callbacks :
+
+
+
+**** Callbacks :
 -----------
 - callbacks can be passed in the args as an object
 	- i.e. :
@@ -73,17 +81,12 @@ switch(true) {
  var args = { // optional...
  		callbacks : {
  			init : function(){...}, // fires at end of init() ...
-			picking : function(){...}, // fires just before picking - which defaults to the custom event of wStopped **** ...
+			picking : function(){...}, // fires just before picking - which defaults to the custom event of wStopped *** ...
 			finished : function(){...} // fires when there are no more un-picked images ...
  		}
  	};
  _pickyImg.init(args);
 ```
-
-
-*** wStopped Event :
------------
-- 
 
 
 to do :

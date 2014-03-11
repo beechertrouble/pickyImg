@@ -117,7 +117,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 		
 		wIsStopped = true;
 		$(W).trigger('wStopped');
-		$('body *').trigger('wStopped');
+		// $('body *').trigger('wStopped');
 		
 	};
 	
