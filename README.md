@@ -15,11 +15,9 @@ markup :
 	- must at least specify a <code>data-src-default</code>  
 - wrap should contain a noscript tag with the default image in it.
 - something like this :
-	- ```
-		<div class="_picky_wrap" data-class="classes-to-be-applied-to-loaded-image" data-src-default="path/to/default.jpg" >
-			<noscript><img src="path/to/default.jpg" /></noscript>
-		</div>
-	```
+	```    <div class="_picky_wrap" data-class="classes-to-be-applied-to-loaded-image" data-src-default="path/to/default.jpg" >
+    <noscript><img src="path/to/default.jpg" /></noscript>
+    </div>
 
 classes, attributes, etc. :
 -----------
