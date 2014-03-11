@@ -31,13 +31,13 @@ usage :
 customization :
 -----------
  - optional args for `init()` :
-```
+```javascript
  var args = { // all of these are optional...
- 		selector : '._picky', // selector(s) to use for bindings, defaults to '._picky'
- 		pad : 0, // defaults to window height
- 		whichSrc : 'data-src-to-use', // defaults to choosing based on UAjammer venue ** OR 'data-src-default' when no UAjammer is present
- 		srcMap : function, // defaults to using UAjammer and default logic **
- 		callbacks : {...} // you can pass funtions for certain callbacks ***
+ 		selector : '._picky', // selector(s) to use for bindings, defaults to '._picky' ...
+ 		pad : 0, // defaults to window height...
+ 		whichSrc : 'data-src-to-use', // defaults to choosing based on UAjammer venue ** OR 'data-src-default' when no UAjammer is present...
+ 		srcMap : function, // defaults to using UAjammer and default logic ** ...
+ 		callbacks : {...} // you can pass funtions for certain callbacks *** ...
  	};
  _pickyImg.init(args);
 ```
