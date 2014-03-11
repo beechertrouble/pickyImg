@@ -26,17 +26,17 @@ markup :
 
 usage :
 -----------
-
+- <code> _pickyImg.init()</code>
 
 customization :
 -----------
  - optional args for `init()` :
 ```javascript
  var args = { // all of these are optional...
- 		selector : '._picky', // selector(s) to use for bindings, defaults to '._picky' ...
+ 		selector : '._picky', // selector to use for bindings, defaults to '._picky' ...
  		pad : 0, // defaults to window height...
  		whichSrc : 'data-src-to-use', // defaults to choosing based on UAjammer venue ** OR 'data-src-default' when no UAjammer is present...
- 		srcMap : function, // defaults to using UAjammer and default logic ** ...
+ 		srcMap : function(){...}, // defaults to using UAjammer and default logic ** ...
  		callbacks : {...} // you can pass funtions for certain callbacks *** ...
  	};
  _pickyImg.init(args);
@@ -44,12 +44,49 @@ customization :
 
 ** SRC Logic :
 -----------
+- this is responsible for choosing the right image src to load.
+- default logic is based on UAjammer venue :
+```javascript
+switch(true) {
+	
+	case(UA.Venue == 'phone'):
+		chosenSrc = UA.Pixels >= 2 ? 'data-src-phonex2' : 'data-src-phone';
+		break;
+	
+	case(UA.Venue == 'tablet'):
+		chosenSrc = UA.Pixels >= 2 ? 'data-src-tabletx2' : 'data-src-tablet';
+		break;
+		
+	case(UA.Venue == 'desktop'):
+		chosenSrc = UA.Pixels >= 2 ? 'data-src-desktopx2' : 'data-desktop';
+		break;
+						
+}
+```
 
 
 *** Callbacks :
 -----------
+- callbacks can be passed in the args as an object
+	- i.e. :
+```javascript
+ var args = { // optional...
+ 		callbacks : {
+ 			init : function(){...}, // fires at end of init() ...
+			picking : function(){...}, // fires just before picking - which defaults to the custom event of wStopped **** ...
+			finished : function(){...} // fires when there are no more un-picked images ...
+ 		}
+ 	};
+ _pickyImg.init(args);
+```
+
+
+*** wStopped Event :
+-----------
+- 
 
 
 to do :
 -----------
+- revisit selector
 - revisit requirements

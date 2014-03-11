@@ -18,6 +18,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 		selector,
 		origin = {},
 		callbacks = {},
+		bindMe,
 		// methods
 		binder, wStopped, pickMe, isFinished, defMap
 		;
@@ -43,15 +44,17 @@ var _pickyImg = (function _pickyImg(W, $) {
 		whichSrc = args.whichSrc || 'data-src-default';
 		srcMap = args.srcMap || undefined;
 		selector = args.selector || '._picky';
+		bindMe = args.bindMe !== undefined ? args.bindMe : true;
 		callbacks = {
 			init : args.init || null,
 			picking : args.picking || null,
 			finished : args.finished || null
 		};
-		
+				
 		whichSrc = typeof srcMap == 'function' ? srcMap() : defMap();		
 		
-		binder();
+		if(bindMe)
+			binder();
 		
 		ME.doCallback('init');
 		
@@ -95,7 +98,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 		});
 		
 		$('body')
-			.on('wStopped', "._picky:not(._picky_picked)", function() {
+			.on('wStopped', selector + ":not(._picky_picked)", function() {
 													
 				ME.doCallback('picking');
 				
@@ -185,7 +188,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 	
 	isFinished = function() {
 				
-		if($("._picky:not(._picky_picked)").length <= 0) {
+		if($(selector + ":not(._picky_picked)").length <= 0) {
 			$('body').addClass('_picky_finished');
 			$(W).trigger('picky_finished');
 			ME.doCallback('finished');
