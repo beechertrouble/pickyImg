@@ -33,6 +33,9 @@ var _pickyImg = (function _pickyImg(W, $) {
 	// ....
 			
 	ME.init = function(initArgs) {
+	
+		/* inView plugin :: https://github.com/beechertrouble/inView */
+		if(!$().inView){$.fn.inView=function(j){var h=false,g=$(window);if(this.length>0){var i=this.offset()===null?0:this.offset().top,f=i+this.height();j=j===undefined?g.height():j;h=((g.scrollTop()+g.height())+j)>=i&&(g.scrollTop()-j)<=f?true:false}return h}};
 		
 		args = initArgs !== undefined ? initArgs : {};
 		pad = args.pad || $(W).height();
@@ -115,7 +118,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 	
 	pickMe = function(dummy) {
 				
-		if(dummy.inView(pad) && !dummy.is('._picky_picking')) {
+		if(dummy.inView(pad) && !dummy.hasClass('._picky_picking')) {
 						
 			dummy.addClass("_picky_picking");
 							
