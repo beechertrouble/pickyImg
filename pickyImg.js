@@ -46,18 +46,21 @@ var _pickyImg = (function _pickyImg(W, $) {
 		selector = args.selector !== undefined ? args.selector : '._picky';
 		bindMe = args.bindMe !== undefined ? args.bindMe : true;
 		callbacks = {
-			init : args.init !== undefined ? args.init : null,
-			picking : args.picking !== undefined ? args.picking : null,
-			finished : args.finished !== undefined ? args.finished : null
+			init : args.callbacks.init !== undefined ? args.callbacks.init : null,
+			finishedInit : args.callbacks.finishedInit !== undefined ? args.callbacks.finishedInit : null,
+			picking : args.callbacks.picking !== undefined ? args.callbacks.picking : null,
+			finished : args.callbacks.finished !== undefined ? args.callbacks.finished : null
 		};
 				
 		whichSrc = typeof srcMap == 'function' ? srcMap() : defMap();		
 		
-		if(bindMe)
-			binder();
-		
 		ME.doCallback('init');
 		
+		if(bindMe)
+			binder();
+			
+		ME.doCallback('finishedInit');
+				
 	};
 	
 	defMap = function() {
@@ -110,9 +113,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 		
 		// trigger first run ...
 		wStopped();
-		
-		console.log('bound');
-		
+				
 	};
 	
 	wStopped = function() {
@@ -124,7 +125,7 @@ var _pickyImg = (function _pickyImg(W, $) {
 	};
 	
 	pickMe = function(dummy) {
-		console.log(dummy.inView(pad) && !dummy.hasClass('_picky_picking'));		
+
 		if(dummy.inView(pad) && !dummy.hasClass('_picky_picking')) {
 						
 			dummy.addClass("_picky_picking");
