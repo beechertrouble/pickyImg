@@ -36,7 +36,7 @@
 			;
 		
 		ME.doCallback = function(event) {
-					
+								
 			var func = callbacks[event];
 				
 			if(func !== undefined && typeof callbacks[event] == 'function')
@@ -47,7 +47,7 @@
 		// ....
 				
 		ME.init = function(initArgs) {
-		
+						
 			/* inView plugin :: https://github.com/beechertrouble/inView */
 			if(!$().inView){$.fn.inView=function(j){var h=false,g=$(window);if(this.length>0){var i=this.offset()===null?0:this.offset().top,f=i+this.height();j=j===undefined?g.height():j;h=((g.scrollTop()+g.height())+j)>=i&&(g.scrollTop()-j)<=f?true:false}return h}};
 			
@@ -57,6 +57,10 @@
 			srcMap = args.srcMap !== undefined ? args.srcMap : undefined;
 			selector = args.selector !== undefined ? args.selector : '._picky';
 			bindMe = args.bindMe !== undefined ? args.bindMe : true;
+			
+			if(args.callbacks === undefined)
+				args.callbacks = {};
+			
 			callbacks = {
 				init : args.callbacks.init !== undefined ? args.callbacks.init : null,
 				finishedInit : args.callbacks.finishedInit !== undefined ? args.callbacks.finishedInit : null,
