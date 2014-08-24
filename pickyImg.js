@@ -32,7 +32,7 @@
 			callbacks = {},
 			bindMe,
 			// methods
-			binder, wStopped, pickMe, isFinished, defMap
+			binder, wStopped, isFinished, defMap
 			;
 		
 		ME.doCallback = function(event) {
@@ -123,7 +123,7 @@
 					
 					$(W).trigger('picky_picking');
 					$('body').removeClass('_picky_finished');
-					pickMe($(this));
+					ME.pickMe($(this));
 					
 				});
 			
@@ -140,7 +140,7 @@
 			
 		};
 		
-		pickMe = function(dummy) {
+		ME.pickMe = function(dummy) {
 	
 			if(dummy.inView(pad) && !dummy.hasClass('_picky_picking')) {
 							
