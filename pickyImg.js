@@ -5,22 +5,25 @@
 * v0.0.1
 * needs jQuery, and maybe UAjammer to work ...
 */
-;(function($, W) {
+;(function($, _scope) {
 
 	'use strict';
-
+	
+	_scope = _scope === undefined ? window : _scope;
+	
 	/**
 	 * for AMD, don't redefine this!  (need to maintain globals and plugins)
 	 */
-	if (W._pickyImg)
+	if (_scope._pickyImg)
 		return;
 	
 	$ = $;
 		
-	var _pickyImg = (function() {
+	var _w = window,
+		_pickyImg = (function() {
 		
 		var ME = {},
-			UA = W._UAjammer !== undefined ? W._UAjammer : undefined,
+			UA = _scope._UAjammer !== undefined ? _scope._UAjammer : undefined,
 			args,
 			pad,
 			wChangeTimer,
@@ -52,7 +55,7 @@
 			if(!$().inView){$.fn.inView=function(j){var h=false,g=$(window);if(this.length>0){var i=this.offset()===null?0:this.offset().top,f=i+this.height();j=j===undefined?g.height():j;h=((g.scrollTop()+g.height())+j)>=i&&(g.scrollTop()-j)<=f?true:false}return h}};
 			
 			args = initArgs !== undefined ? initArgs : {};
-			pad = args.pad !== undefined ? args.pad : $(W).height();
+			pad = args.pad !== undefined ? args.pad : _w.outerHeight;
 			whichSrc = args.whichSrc !== undefined ? args.whichSrc : 'data-src-default';
 			srcMap = args.srcMap !== undefined ? args.srcMap : undefined;
 			selector = args.selector !== undefined ? args.selector : '._picky';
@@ -108,7 +111,7 @@
 		
 		binder = function() {
 						
-			$(W).on('scroll resize', function() {
+			$(_w).on('scroll', function() {
 				
 				wIsStopped = false;
 				clearTimeout(wChangeTimer);
@@ -116,12 +119,12 @@
 					
 			});
 			
-			$('body')
+			$(document.body)
 				.on('wStopped', selector + ":not(._picky_picked)", function() {
 														
 					ME.doCallback('picking');
 					
-					$(W).trigger('picky_picking');
+					$(_w).trigger('picky_picking');
 					$('body').removeClass('_picky_finished');
 					ME.pickMe($(this));
 					
@@ -135,7 +138,7 @@
 		wStopped = function() {
 			
 			wIsStopped = true;
-			$(W).trigger('wStopped');
+			$(_w).trigger('wStopped');
 			$('body ' + selector).trigger('wStopped');
 			
 		};
@@ -209,7 +212,7 @@
 					
 			if($(selector + ":not(._picky_picked)").length <= 0) {
 				$('body').addClass('_picky_finished');
-				$(W).trigger('picky_finished');
+				$(_w).trigger('picky_finished');
 				ME.doCallback('finished');
 			}
 			
@@ -222,9 +225,9 @@
 	/**
 	 * Apply the ikelos function to the supplied scope (window)
 	 */
-	W._pickyImg = _pickyImg;
+	_scope._pickyImg = _pickyImg;
 
-})(jQuery || $, window);
+})((jQuery || $), (typeof scope == 'undefined' ? window :  scope));
 
 /**
  * Expose fingaFingaz as an AMD

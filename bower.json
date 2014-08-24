@@ -1,0 +1,19 @@
+{
+	"name": "pickyImg",
+	"version": "1.0.0",
+	"homepage": "https://github.com/beechertrouble/pickyImg",
+	"authors": [
+		"Avery <brooks@radicalmedia.com>",
+		"Beecher <smithstackhouse@radicalmedia.com>",
+		"Dan Hai <dan@danielhai.com>"
+	],
+	"ignore": [
+		"node_modules",
+		"Gruntfile.js",
+		"package.json",
+		".project"
+	],
+	"main": "pickyImg.min.js",
+	"license": "MIT",
+	"private": false
+}
