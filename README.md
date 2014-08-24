@@ -37,7 +37,10 @@ markup :
 
 usage :
 -----------
+- regular style :
 - <code> _pickyImg.init()</code>
+- if you want to force a pick :
+- <code> _pickyImg.pickMe(dummy, which_src, force)</code>
 
 customization :
 -----------
@@ -46,7 +49,7 @@ customization :
  var args = { // all of these are optional...
  		selector : '._picky', // selector to use for bindings, defaults to '._picky' ...
  		pad : 0, // defaults to window height... *
- 		whichSrc : 'data-src-to-use', // defaults to choosing based on UAjammer venue ** -OR- 'data-src-default' when no UAjammer is present...
+ 		whichSrc : 'src-to-use', // defaults to choosing based on UAjammer venue ** -OR- 'data-src-default' when no UAjammer is present...
  		srcMap : function(){...}, // must return the 'data-src' attribute to use, defaults to using UAjammer and default logic ** ...
  		bindMe : true, // use defualt binding, defaults to true *** ...
  		callbacks : {...} // you can pass funtions for certain callbacks **** ...
@@ -77,20 +80,27 @@ fancy :
 - this is responsible for choosing the right image src to load - and sets the <code>whichSrc</code> var
 - default logic is based on UAjammer venue :
 ```javascript
-switch(true) {
+whichSrc : function() {
+
+	var chosenSrc = whichSrc;
 	
-	case(UA.Venue == 'phone'):
-		chosenSrc = UA.Pixels >= 2 ? 'data-src-phonex2' : 'data-src-phone';
-		break;
-	
-	case(UA.Venue == 'tablet'):
-		chosenSrc = UA.Pixels >= 2 ? 'data-src-tabletx2' : 'data-src-tablet';
-		break;
+	switch(true) {
 		
-	case(UA.Venue == 'desktop'):
-		chosenSrc = UA.Pixels >= 2 ? 'data-src-desktopx2' : 'data-src-desktop';
-		break;
-						
+		case(UA.Venue == 'phone'):
+			chosenSrc = UA.Pixels >= 2 ? 'src-phonex2' : 'src-phone';
+			break;
+		
+		case(UA.Venue == 'tablet'):
+			chosenSrc = UA.Pixels >= 2 ? 'src-tabletx2' : 'src-tablet';
+			break;
+			
+		case(UA.Venue == 'desktop'):
+			chosenSrc = UA.Pixels >= 2 ? 'src-desktopx2' : 'src-desktop';
+			break;
+							
+	}
+	
+	return chosenSrc;
 }
 ```
 

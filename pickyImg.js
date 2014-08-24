@@ -35,7 +35,7 @@
 			callbacks = {},
 			bindMe,
 			// methods
-			binder, wStopped, isFinished, defMap
+			binder, wStopped, isFinished, defMap, getNoscriptSrc
 			;
 		
 		ME.doCallback = function(event) {
@@ -56,7 +56,7 @@
 			
 			args = initArgs !== undefined ? initArgs : {};
 			pad = args.pad !== undefined ? args.pad : _w.outerHeight;
-			whichSrc = args.whichSrc !== undefined ? args.whichSrc : 'data-src-default';
+			whichSrc = args.whichSrc !== undefined ? args.whichSrc : 'src-default';
 			srcMap = args.srcMap !== undefined ? args.srcMap : undefined;
 			selector = args.selector !== undefined ? args.selector : '._picky';
 			bindMe = args.bindMe !== undefined ? args.bindMe : true;
@@ -92,15 +92,15 @@
 			switch(true) {
 				
 				case(UA.Venue == 'phone'):
-					chosenSrc = UA.Pixels >= 2 ? 'data-src-phonex2' : 'data-src-phone';
+					chosenSrc = UA.Pixels >= 2 ? 'src-phonex2' : 'src-phone';
 					break;
 				
 				case(UA.Venue == 'tablet'):
-					chosenSrc = UA.Pixels >= 2 ? 'data-src-tabletx2' : 'data-src-tablet';
+					chosenSrc = UA.Pixels >= 2 ? 'src-tabletx2' : 'src-tablet';
 					break;
 					
 				case(UA.Venue == 'desktop'):
-					chosenSrc = UA.Pixels >= 2 ? 'data-src-desktopx2' : 'data-src-desktop';
+					chosenSrc = UA.Pixels >= 2 ? 'src-desktopx2' : 'src-desktop';
 					break;
 									
 			}
@@ -143,68 +143,81 @@
 			
 		};
 		
-		ME.pickMe = function(dummy) {
+		ME.pickMe = function(dummy, which_src, force) {
+			
+			which_src = which_src === undefined || !which_src ? whichSrc : which_src;
+			force = force === undefined ? false : force;
 	
-			if(dummy.inView(pad) && !dummy.hasClass('_picky_picking')) {
-							
-				dummy.addClass("_picky_picking");
-								
-				var no_script = dummy.find('noscript'),
-					src = dummy.attr(whichSrc), 
-					img = new Image(), 
-					imgClass = dummy.attr('data-class'),
-					imgAlt = dummy.attr('data-alt'),
-					imgLoad_handler;
-	
-				imgLoad_handler = function() {
-					
-					if(dummy.hasClass('_picky_bg')) {
-						dummy.css({'background-image' : 'url(' + src + ')'});
-					} else {
-						dummy.prepend($(this));
-					}
-					
-					if(_UAjammer.Browser.Name == 'msie' && _UAjammer.Browser.Version <= 8) 
-						$(this).height( ($(this).height() * $(this).width() ) / this.width);
-	
-					$(this).removeClass('_picky_picking').attr('alt', imgAlt);
-					setTimeout(function(){
-						dummy.removeClass('_picky_picking').addClass('_picky_picked');
-						isFinished();
-					}, 10);
-					
-				};
+			if((!dummy.inView(pad) || dummy.hasClass('_picky_picking') || dummy.hasClass('_picky_picked') && !force)) 
+				return; 
 				
-				// add the loading classes before we even start ...
-				$(img).addClass(imgClass).addClass('_picky_picking');
-	
-				// test to see if there is already an image that is trying to load this src ...
-				if (!origin[src]) {
-					
-					// store the hash
-					origin[src] = img;
-					
-					// do stuff when it loads
-					img.onload = imgLoad_handler;
-												
+			console.log('picking ', which_src);
+							
+			dummy.addClass("_picky_picking");
+							
+			var no_script = dummy.find('noscript'),
+				src = dummy.data(which_src) === undefined ? dummy.data('src-default') : dummy.data(which_src), 
+				img = new Image(), 
+				imgClass = dummy.data('class'),
+				imgAlt = dummy.data('alt'),
+				imgLoad_handler;	
+			
+			src = src !== undefined ? src : getNoscriptSrc(dummy);
+			
+			imgLoad_handler = function() {
+				
+				if(dummy.hasClass('_picky_bg')) {
+					dummy.css({'background-image' : 'url(' + src + ')'});
 				} else {
-					
-					// listen for that first image to load bind that to our current image ...
-					var originimg = $(origin[src]);
-					
-					// see if it's loaded already ...
-					if (originimg.hasClass('_picky_picked')) {
-						originimg.on('load', imgLoad_handler.bind(img));
-					// call immediately ...
-					} else {
-						imgLoad_handler.bind(img)();
-					}
+					dummy.prepend($(this));
 				}
 				
-				dummy.attr('data-pref-src', src);
-				img.src = 	src;
+				if(_UAjammer.Browser.Name == 'msie' && _UAjammer.Browser.Version <= 8) 
+					$(this).height( ($(this).height() * $(this).width() ) / this.width);
+
+				$(this).removeClass('_picky_picking').attr('alt', imgAlt);
+				setTimeout(function(){
+					dummy.removeClass('_picky_picking').addClass('_picky_picked');
+					isFinished();
+				}, 10);
+				
+			};
 			
+			// add the loading classes before we even start ...
+			$(img).addClass(imgClass).addClass('_picky_picking');
+
+			// test to see if there is already an image that is trying to load this src ...
+			if (!origin[src]) {
+				
+				// store the hash
+				origin[src] = img;
+				
+				// do stuff when it loads
+				img.onload = imgLoad_handler;
+											
+			} else {
+				
+				// listen for that first image to load bind that to our current image ...
+				var originimg = $(origin[src]);
+				
+				// see if it's loaded already ...
+				if (originimg.hasClass('_picky_picked')) {
+					originimg.on('load', imgLoad_handler.bind(img));
+				// call immediately ...
+				} else {
+					imgLoad_handler.bind(img)();
+				}
 			}
+			
+			dummy.data('pref-src', src);
+			img.src = 	src;
+						
+		};
+		
+		getNoscriptSrc = function(dummy) {
+			
+			var noscript = dummy.find('noscript')[0];
+			return $(noscript).html().match(/src="([^"]+)"/)[1];
 			
 		};
 		
