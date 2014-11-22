@@ -73,6 +73,8 @@
 					
 			whichSrc = typeof srcMap == 'function' ? srcMap() : defMap();		
 			
+			console.log('whichSrc', whichSrc);
+			
 			ME.doCallback('init');
 			
 			if(bindMe)
@@ -83,8 +85,8 @@
 		};
 		
 		defMap = function() {
-			
-			if(UA === undefined || srcMap === undefined)
+
+			if(UA === undefined || srcMap !== undefined)
 				return whichSrc;
 				
 			var chosenSrc = whichSrc;
@@ -104,30 +106,20 @@
 					break;
 									
 			}
-			
+
 			return chosenSrc;
 				
 		};
 		
 		binder = function() {
-						
-			$(_w).on('scroll', function() {
-				
-				wIsStopped = false;
-				clearTimeout(wChangeTimer);
-				wChangeTimer = setTimeout( wStopped , 150 );
-					
-			});
-			
+									
 			$(document.body)
-				.on('wStopped', selector + ":not(._picky_picked)", function() {
-														
-					ME.doCallback('picking');
-					
-					$(_w).trigger('picky_picking');
-					$('body').removeClass('_picky_finished');
-					ME.pickMe($(this));
-					
+				.on('scroll._picky', function() {
+
+					wIsStopped = false;
+					clearTimeout(wChangeTimer);
+					wChangeTimer = setTimeout( wStopped , 150 );
+						
 				});
 			
 			// trigger first run ...
@@ -137,22 +129,25 @@
 		
 		wStopped = function() {
 			
-			wIsStopped = true;
-			$(_w).trigger('wStopped');
-			$('body ' + selector).trigger('wStopped');
+			wIsStopped = true;			
+												
+			ME.doCallback('picking');
+			
+			$(_w).trigger('picky_picking');
+			$('body').removeClass('_picky_finished');
+			ME.pickMe( $(selector + ':not("._picky_picked")') );
 			
 		};
 		
 		ME.pickMe = function(dummy, which_src, force) {
-			
+						
 			which_src = which_src === undefined || !which_src ? whichSrc : which_src;
+			which_src = which_src.replace('data-', '');
 			force = force === undefined ? false : force;
-	
+
 			if((!dummy.inView(pad) || dummy.hasClass('_picky_picking') || dummy.hasClass('_picky_picked') && !force)) 
 				return; 
-				
-			console.log('picking ', which_src);
-							
+																			
 			dummy.addClass("_picky_picking");
 							
 			var no_script = dummy.find('noscript'),
