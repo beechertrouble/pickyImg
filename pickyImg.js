@@ -21,7 +21,7 @@
 		
 	var _w = window,
 		_pickyImg = (function() {
-		
+
 		var ME = {},
 			UA = _scope._UAjammer !== undefined ? _scope._UAjammer : undefined,
 			args,
@@ -35,7 +35,7 @@
 			callbacks = {},
 			bindMe,
 			// methods
-			binder, wStopped, isFinished, defMap, getNoscriptSrc
+			binder, wStopped, wTrigger, isFinished, defMap, getNoscriptSrc
 			;
 		
 		ME.doCallback = function(event) {
@@ -50,7 +50,7 @@
 		// ....
 				
 		ME.init = function(initArgs) {
-						
+									
 			/* inView plugin :: https://github.com/beechertrouble/inView */
 			if(!$().inView){$.fn.inView=function(j){var h=false,g=$(window);if(this.length>0){var i=this.offset()===null?0:this.offset().top,f=i+this.height();j=j===undefined?g.height():j;h=((g.scrollTop()+g.height())+j)>=i&&(g.scrollTop()-j)<=f?true:false}return h}};
 			
@@ -72,9 +72,7 @@
 			};
 					
 			whichSrc = typeof srcMap == 'function' ? srcMap() : defMap();		
-			
-			console.log('whichSrc', whichSrc);
-			
+						
 			ME.doCallback('init');
 			
 			if(bindMe)
@@ -113,18 +111,27 @@
 		
 		binder = function() {
 									
+			$(_w)
+				.on('resize._picky', function() {
+					wTrigger();
+				});
+				
 			$(document.body)
 				.on('scroll._picky', function() {
-
-					wIsStopped = false;
-					clearTimeout(wChangeTimer);
-					wChangeTimer = setTimeout( wStopped , 150 );
-						
+					wTrigger();
 				});
 			
 			// trigger first run ...
 			wStopped();
 					
+		};
+		
+		wTrigger = function() {
+			
+			wIsStopped = false;
+			clearTimeout(wChangeTimer);
+			wChangeTimer = setTimeout( wStopped , 150 );
+			
 		};
 		
 		wStopped = function() {
@@ -135,7 +142,9 @@
 			
 			$(_w).trigger('picky_picking');
 			$('body').removeClass('_picky_finished');
-			ME.pickMe( $(selector + ':not("._picky_picked")') );
+			$(selector + ':not("._picky_picked")').each(function() {
+				ME.pickMe( $(this) );
+			});
 			
 		};
 		
@@ -144,10 +153,10 @@
 			which_src = which_src === undefined || !which_src ? whichSrc : which_src;
 			which_src = which_src.replace('data-', '');
 			force = force === undefined ? false : force;
-
+						
 			if((!dummy.inView(pad) || dummy.hasClass('_picky_picking') || dummy.hasClass('_picky_picked') && !force)) 
 				return; 
-																			
+																						
 			dummy.addClass("_picky_picking");
 							
 			var no_script = dummy.find('noscript'),
