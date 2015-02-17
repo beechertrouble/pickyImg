@@ -130,6 +130,6 @@ whichSrc : function() {
 
 to do :
 -----------
-- option for image reload in window resize?
-- option for factoring in 
+- option for image reload in window resize (like get larger/smaller versions)?
+- no scroll events for opera mini - so we'll need a solution for that
 - revisit requirements
